@@ -1,0 +1,26 @@
+{
+    "name": "ExternalImage",
+    "version": "1.0.0",
+    "author": [
+        "Joe"
+    ],
+    "url": "https://www.mediawiki.org/wiki/Extension:ExternalImage",
+    "descriptionmsg": "externalimage-desc",
+    "license-name": "GPL-2.0-or-later",
+    "type": "parserhook",
+    "requires": {
+        "MediaWiki": ">= 1.35.0"
+    },
+    "MessagesDirs": {
+        "ExternalImage": [
+            "i18n"
+        ]
+    },
+    "AutoloadClasses": {
+        "ExternalImage": "ExternalImage.php"
+    },
+    "Hooks": {
+        "ParserFirstCallInit": "ExternalImage::onParserFirstCallInit"
+    },
+    "manifest_version": 2
+}

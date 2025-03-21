@@ -1,0 +1,13 @@
+{
+    "@metadata": {
+        "authors": [
+            "Joe"
+        ],
+        "last-updated": "2024-03-06",
+        "locale": "en"
+    },
+    "externalimage-desc": "A MediaWiki extension that displays external images with resizable dimensions and link support.",
+    "externalimage-error-src": "Error: src attribute required.",
+    "externalimage-i18n-name": "ExternalImage",
+    "externalimage-i18n-desc": "Adds support for embedding external images with additional functionality"
+} 

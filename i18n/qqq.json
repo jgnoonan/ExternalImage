@@ -1,0 +1,11 @@
+{
+    "@metadata": {
+        "authors": [
+            "Joe"
+        ]
+    },
+    "externalimage-desc": "{{desc|name=ExternalImage|url=https://www.mediawiki.org/wiki/Extension:ExternalImage}}",
+    "externalimage-error-src": "Error message shown when the required src attribute is missing from the img tag",
+    "externalimage-i18n-name": "{{name}}",
+    "externalimage-i18n-desc": "{{desc}}"
+} 
