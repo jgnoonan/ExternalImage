@@ -20,6 +20,13 @@ class ExternalImage {
         $newtab = isset( $args['newtab'] ) && strtolower( $args['newtab'] ) === 'true';
 
         $style = '';
+        if ( $width ) {
+            $style .= "width:{$width};";
+        }
+        if ( $height ) {
+            $style .= "height:{$height};";
+        }
+        $styleAttr = $style ? " style=\"$style\"" : '';
         $imgSize = null;
         if (( $width !== '' && strpos( $width, '%' ) !== false ) || ( $height !== '' && strpos( $height, '%' ) !== false )) {
             $imgSize = @getimagesize( $src );
