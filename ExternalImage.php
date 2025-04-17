@@ -9,9 +9,16 @@ class ExternalImage {
     }
 
     public static function renderExtImg( $input, array $args, Parser $parser, PPFrame $frame ) {
+        // Allow fallback if src is embedded inside content (e.g., <img>https://url</img>)
+        $input = trim( $input );
+        if ( empty( $args['src'] ) && filter_var( $input, FILTER_VALIDATE_URL ) ) {
+            $args['src'] = $input;
+        }
+
         if ( empty( $args['src'] ) ) {
             return '<span style="color:red;">' . wfMessage( 'externalimage-error-src' )->escaped() . '</span>';
         }
+
         $src    = htmlspecialchars( $args['src'] );
         $width  = isset( $args['width'] ) ? htmlspecialchars( $args['width'] ) : '';
         $height = isset( $args['height'] ) ? htmlspecialchars( $args['height'] ) : '';
@@ -20,52 +27,52 @@ class ExternalImage {
         $newtab = isset( $args['newtab'] ) && strtolower( $args['newtab'] ) === 'true';
 
         $style = '';
-        if ( $width ) {
-            $style .= "width:{$width};";
-        }
-        if ( $height ) {
-            $style .= "height:{$height};";
-        }
-        $styleAttr = $style ? " style=\"$style\"" : '';
         $imgSize = null;
-        if (( $width !== '' && strpos( $width, '%' ) !== false ) || ( $height !== '' && strpos( $height, '%' ) !== false )) {
+
+        // Handle % dimensions
+        if (( $width && strpos( $width, '%' ) !== false ) || ( $height && strpos( $height, '%' ) !== false )) {
             $imgSize = @getimagesize( $src );
         }
-        
-        if ( $width !== '' ) {
+
+        if ( $width ) {
             if ( strpos( $width, '%' ) !== false && $imgSize ) {
-                $perc = floatval( $width );
-                $computedWidth = $imgSize[0] * ($perc / 100);
+                $computedWidth = $imgSize[0] * ( floatval( $width ) / 100 );
                 $style .= "width:{$computedWidth}px;";
             } else {
                 $style .= "width:{$width};";
             }
         }
-        if ( $height !== '' ) {
+
+        if ( $height ) {
             if ( strpos( $height, '%' ) !== false && $imgSize ) {
-                $perc = floatval( $height );
-                $computedHeight = $imgSize[1] * ($perc / 100);
+                $computedHeight = $imgSize[1] * ( floatval( $height ) / 100 );
                 $style .= "height:{$computedHeight}px;";
             } else {
                 $style .= "height:{$height};";
             }
         }
 
-        $widthAttr = '';
-        $heightAttr = '';
+        // SVG pointer handling
         if ( preg_match( '/\.svg$/i', $src ) ) {
-            if ( $width !== '' && strpos( $width, '%' ) === false ) {
-                $widthAttr = " width=\"{$width}\"";
-            }
-            if ( $height !== '' && strpos( $height, '%' ) === false ) {
-                $heightAttr = " height=\"{$height}\"";
-            }
             $style .= "pointer-events:auto;";
         }
 
-        $imgTag = "<img src=\"{$src}\" alt=\"{$alt}\" style=\"{$style}\"{$widthAttr}{$heightAttr} />";
+        $widthAttr = '';
+        $heightAttr = '';
 
-        if ( $link !== '' ) {
+        if ( preg_match( '/\.svg$/i', $src ) ) {
+            if ( $width && strpos( $width, '%' ) === false ) {
+                $widthAttr = " width=\"{$width}\"";
+            }
+            if ( $height && strpos( $height, '%' ) === false ) {
+                $heightAttr = " height=\"{$height}\"";
+            }
+        }
+
+        $styleAttr = $style ? " style=\"{$style}\"" : '';
+        $imgTag = "<img src=\"{$src}\" alt=\"{$alt}\"{$styleAttr}{$widthAttr}{$heightAttr} />";
+
+        if ( $link ) {
             $target = $newtab ? " target=\"_blank\" rel=\"noopener noreferrer\"" : "";
             $imgTag = "<a href=\"{$link}\"{$target}>{$imgTag}</a>";
         }
@@ -73,3 +80,4 @@ class ExternalImage {
         return $imgTag;
     }
 }
+
